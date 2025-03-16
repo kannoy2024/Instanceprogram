@@ -9,4 +9,4 @@ public class SuperBuildingFactory extends BuildingFactory {
    public SemiDetacher getSemiDetacher(){
       return new SuperSemiDetacher("Super semi-detacher");
    }
-} // End of class
+}
