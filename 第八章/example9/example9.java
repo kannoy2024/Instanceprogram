@@ -1,8 +1,6 @@
 package example9;
 
 import java.util.Scanner;
-// import java.util.regex.Pattern;
-// import java.util.regex.Matcher;
 
 public class example9 {
     public static void main(String[] args) {
