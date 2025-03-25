@@ -40,6 +40,7 @@ class LuxHouseBuilder extends HouseBuilder {
 		JLabel label4 = new JLabel("Garage type:");
 		JLabel label5 = new JLabel("Garden type:");
 		JLabel label6 = new JLabel("Swimming pool type:");
+		JLabel label7 = new JLabel("我想象不到豪华的房子应该是怎么样的");
 
 		JRadioButton areaBtn1 = new JRadioButton(SMALL_AREA);
 		JRadioButton areaBtn2 = new JRadioButton(BIG_AREA);
@@ -81,15 +82,19 @@ class LuxHouseBuilder extends HouseBuilder {
 		houseGUI.add(label1);
 		houseGUI.add(areaBtn1);
 		houseGUI.add(areaBtn2);
+
 		houseGUI.add(label2);
 		houseGUI.add(bedroomBtn1);
 		houseGUI.add(bedroomBtn2);
+
 		houseGUI.add(label3);
 		houseGUI.add(bathroomBtn1);
 		houseGUI.add(bathroomBtn2);
+
 		houseGUI.add(label4);
 		houseGUI.add(grageBtn1);
 		houseGUI.add(grageBtn2);
+
 		houseGUI.add(label5);
 		houseGUI.add(gardenBtn1);
 		houseGUI.add(gardenBtn2);
@@ -97,6 +102,8 @@ class LuxHouseBuilder extends HouseBuilder {
 		houseGUI.add(label6);
 		houseGUI.add(swPoolBtn1);
 		houseGUI.add(swPoolBtn2);
+
+		houseGUI.add(label7);
 
 		areaBtn1.addActionListener(new AreaListener());
 		areaBtn2.addActionListener(new AreaListener());

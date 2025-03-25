@@ -32,12 +32,12 @@ public class HouseBuyerGUI extends JPanel {
 	private ButtonHandler bh;
 
 	static final Dimension minimumSize = new Dimension(230, 200);
-	public static final String SUBMIT = "Submit";
-	public static final String EXIT = "Exit";
-	public static final String ECONOMY_HOUSE = "Economy House";
-	public static final String NORMAL_HOUSE = "Normal House";
-	public static final String LUXURY_HOUSE = "Luxury House";
-	public static final String BLANK = "Choose House Type";
+	public static final String SUBMIT = "提交";
+	public static final String EXIT = "退出";
+	public static final String ECONOMY_HOUSE = "经济性房子";
+	public static final String NORMAL_HOUSE = "常规房子";
+	public static final String LUXURY_HOUSE = "豪华房子";
+	public static final String BLANK = "房子的类型";
 
 	public HouseBuyerGUI() {
 		super(new GridLayout(1, 0));
