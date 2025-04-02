@@ -1,0 +1,5 @@
+Today is Wednesday 句子中的单词数量：  3
+and I am studying in Room 303 of Building C for self-study 句子中的单词数量：  12
+The content of Chapter 10 in the textbook 句子中的单词数量：  8
+mainly focuses in using input and output streams 句子中的单词数量：  8
+to control the input and output of data 句子中的单词数量：  8

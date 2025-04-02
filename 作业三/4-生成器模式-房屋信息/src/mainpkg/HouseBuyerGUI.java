@@ -26,7 +26,7 @@ public class HouseBuyerGUI extends JPanel {
 	private JSplitPane bigSplitPane;
 	private JSplitPane upSplitPane;
 	private JPanel downPanel;
-	private JComboBox cmbHouseType;
+	private JComboBox<String> cmbHouseType;
 	private JPanel buttonPanel;
 	private JPanel houseOptPanel;
 	private ButtonHandler bh;

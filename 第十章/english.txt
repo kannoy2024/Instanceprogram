@@ -1,0 +1,5 @@
+Today is Wednesday
+and I am studying in Room 303 of Building C for self-study
+The content of Chapter 10 in the textbook
+mainly focuses in using input and output streams
+to control the input and output of data
