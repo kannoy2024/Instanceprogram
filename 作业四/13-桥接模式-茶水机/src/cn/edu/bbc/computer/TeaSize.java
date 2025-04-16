@@ -11,6 +11,6 @@ package cn.edu.bbc.computer;
 
 public interface TeaSize {
 
-   public abstract float getPrice();
+   public abstract float getSize();
 
 }

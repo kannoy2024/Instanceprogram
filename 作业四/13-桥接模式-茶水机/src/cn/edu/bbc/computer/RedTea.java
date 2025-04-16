@@ -5,13 +5,18 @@
 /*=================================================*/
 package cn.edu.bbc.computer;
 
-
-
+//杯型桥接茶品，和茶品桥接杯型的互换
 public class RedTea implements TeaKind{
 
-   private final float PRICE = 3.0f;
+    private TeaSize tSize;
 
-   public float price(){
-      return PRICE;
-   }
+    RedTea(TeaSize tSize){
+      this.tSize = tSize;
+    }
+    public float getPrice(){
+      float teaPrice = tSize.getSize() * 3.0f;
+      return teaPrice;
+    }
+
+  
 }

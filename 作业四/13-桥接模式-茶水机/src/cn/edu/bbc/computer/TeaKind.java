@@ -12,6 +12,6 @@ package cn.edu.bbc.computer;
 
 public interface TeaKind {
 
-   public abstract float price();
+   public abstract float getPrice();
 
 }

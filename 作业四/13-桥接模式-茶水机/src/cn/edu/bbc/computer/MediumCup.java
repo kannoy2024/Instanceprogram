@@ -9,19 +9,13 @@
 /*=================================================*/
 package cn.edu.bbc.computer;
 
-
-
-
+//杯型桥接茶品，和茶品桥接杯型的互换
 public class MediumCup implements TeaSize{
 
-   private TeaKind tk;
+   private final float size = 1.0f;
 
-   public MediumCup(TeaKind tKind){
-   	  tk = tKind;
-   }
 
-   public float getPrice(){
-      float teaPrice = tk.price();
-      return teaPrice;
+   public float getSize(){
+      return size;
    }
 }

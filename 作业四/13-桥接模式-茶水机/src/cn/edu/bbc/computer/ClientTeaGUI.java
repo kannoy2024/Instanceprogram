@@ -123,31 +123,33 @@ public class ClientTeaGUI extends JFrame {
 
 	class ButtonListener implements ActionListener {
 
-		TeaKind tKind;
-		TeaSize tSize;
+        TeaKind tKind;
+        TeaSize tSize;
 
-		public void actionPerformed(ActionEvent e) {
-			if (e.getActionCommand().equals(EXIT)) {
-				System.exit(1);
-			}
-			if (e.getActionCommand().equals(FIND_PRICE)) {
+        public void actionPerformed(ActionEvent e) {
+            if (e.getActionCommand().equals(EXIT)) {
+                System.exit(1);
+            }
+            if (e.getActionCommand().equals(FIND_PRICE)) {
 
-				String size = getTeaSize();
-				String kind = getTeaKind();
+                String size = getTeaSize();
+                String kind = getTeaKind();
 
-				// Create a customer object
-				if (kind.compareTo(GREEN_TEA) == 0)
-					tKind = new GreenTea();
-				if (kind.compareTo(RED_TEA) == 0)
-					tKind = new RedTea();
-				if (size.compareTo(SUPER_CUP) == 0)
-					tSize = new SuperCup(tKind);
-				if (size.compareTo(MEDIUM_CUP) == 0)
-					tSize = new MediumCup(tKind);
-
-				float price = tSize.getPrice();
-				lblChosenTeaPrice.setText("" + price + "  dollars");
-			}
-		}
+                // Create a customer object
+				//修改的部分，将杯子和茶品互换
+                if (size.equals(SUPER_CUP)) 
+                    tSize = new SuperCup();
+                if (size.equals(MEDIUM_CUP)) 
+                    tSize = new MediumCup();
+                if (kind.equals(GREEN_TEA)) 
+                    tKind = new GreenTea(tSize);
+                if (kind.equals(RED_TEA)) 
+                    tKind = new RedTea(tSize);
+               
+                float price = tKind.getPrice();
+                lblChosenTeaPrice.setText("" + price + "  dollars");  
+            }
+        }
 	} // End of class ButtonListener
 }
+

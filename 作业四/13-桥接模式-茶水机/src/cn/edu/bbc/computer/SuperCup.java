@@ -9,21 +9,11 @@
 /*=================================================*/
 package cn.edu.bbc.computer;
 
-
-
-
-
-
+//杯型桥接茶品，和茶品桥接杯型的互换
 public class SuperCup implements TeaSize{
 
-   private TeaKind tk;
-
-   public SuperCup(TeaKind tKind){
-	  tk = tKind;
-   }
-
-   public float getPrice(){
-      float teaPrice = 1.5f * tk.price();
-      return teaPrice;
+   private final float size =1.5f;
+   public float getSize(){
+      return size;
    }
 }
