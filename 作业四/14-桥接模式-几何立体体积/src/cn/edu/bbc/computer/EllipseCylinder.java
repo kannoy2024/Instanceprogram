@@ -11,8 +11,8 @@ public class EllipseCylinder implements GeoForm{
    private double aRadius;
    private double bRadius;
    private double height;
-   private final String FOOT = "foot";
-   private final String METER = "meter";
+//    private final String FOOT = "foot";
+//    private final String METER = "meter";
 
    public EllipseCylinder(double aRadius, double bRadius, double height){
 	   this.aRadius = aRadius;

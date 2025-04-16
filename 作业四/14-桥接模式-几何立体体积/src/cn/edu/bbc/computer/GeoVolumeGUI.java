@@ -18,6 +18,10 @@ public class GeoVolumeGUI extends JPanel {
 	private JTextField txtCubeLength;
 	private JTextField txtCubeWidth;
 	private JTextField txtCubeHeight;
+	// Ellipsoid
+	private JTextField txtEllipsoidRadius_a;
+	private JTextField txtEllipsoidRadius_b;
+	private JTextField txtEllipsoidRadius_c;
 
 	private ButtonHandler btnHandler;
 	static final Dimension minimumSize = new Dimension(230, 200);
@@ -25,9 +29,11 @@ public class GeoVolumeGUI extends JPanel {
 	public static final String EXIT = "Exit";
 	public static final String CUBE = "Cube  ";
 	public static final String CYLINDER = "Cylinder";
+	public static final String EllIPSOID = "Ellipsoid";// Ellipsoid
 	public static final String BLANK = "Choose geometric form";
 	public static final String FEET = "Feet";
 	public static final String METERS = "Meters";
+
 
 	public GeoVolumeGUI() {
 		super(new GridLayout(1, 0));
@@ -59,6 +65,7 @@ public class GeoVolumeGUI extends JPanel {
 		cmbGeoForm.addItem(BLANK);
 		cmbGeoForm.addItem(CUBE);
 		cmbGeoForm.addItem(CYLINDER);
+		cmbGeoForm.addItem(EllIPSOID);	
 		cmbGeoForm.addActionListener(btnHandler);
 
 		// For layout purposes, put the buttons in a separate panel
@@ -181,6 +188,15 @@ public class GeoVolumeGUI extends JPanel {
 					double h = Double.valueOf(height);
 
 					form = new EllipseCylinder(a, b, h);
+				} else if (selection.equals((EllIPSOID))) {
+					String a_radius = txtEllipsoidRadius_a.getText();
+					String b_radius = txtEllipsoidRadius_b.getText();
+					String c_radius = txtEllipsoidRadius_c.getText();
+					double a = Double.valueOf(a_radius);
+					double b = Double.valueOf(b_radius);
+					double c = Double.valueOf(c_radius);
+				
+					form = new Ellipsoid(a, b, c);
 				}
 
 				measure = getMeasureChoice();
@@ -202,6 +218,9 @@ public class GeoVolumeGUI extends JPanel {
 					displayNewGUI(getTypePanel(CUBE));
 				else if (selection.equals(CYLINDER))
 					displayNewGUI(getTypePanel(CYLINDER));
+				else if (selection.equals(EllIPSOID)) {
+					displayNewGUI(getTypePanel(EllIPSOID));
+				}
 				upperLeftPanel.repaint();
 			}
 		}
@@ -212,8 +231,9 @@ public class GeoVolumeGUI extends JPanel {
 		cmbMeasure = new JComboBox<String>();
 		cmbMeasure.addItem(FEET);
 		cmbMeasure.addItem(METERS);
+	
 		JLabel lblMeasure = new JLabel("Measured by");
-
+	
 		if (type.equals(CUBE)) {
 			JLabel lblLength = new JLabel("Input Length");
 			JLabel lblWidth = new JLabel("Input width");
@@ -221,26 +241,26 @@ public class GeoVolumeGUI extends JPanel {
 			txtCubeLength = new JTextField(8);
 			txtCubeWidth = new JTextField(8);
 			txtCubeHeight = new JTextField(8);
-
+	
 			GridBagLayout gridBag = new GridBagLayout();
 			typePanel.setLayout(gridBag);
 			GridBagConstraints gbc = new GridBagConstraints();
-
+	
 			typePanel.add(lblLength);
 			typePanel.add(lblWidth);
 			typePanel.add(lblHeight);
 			typePanel.add(lblMeasure);
-
+	
 			typePanel.add(txtCubeLength);
 			typePanel.add(txtCubeWidth);
 			typePanel.add(txtCubeHeight);
 			typePanel.add(cmbMeasure);
-
+	
 			gbc.insets.top = 5;
 			gbc.insets.bottom = 5;
 			gbc.insets.left = 1;
 			gbc.insets.right = 8;
-
+	
 			gbc.anchor = GridBagConstraints.WEST;
 			gbc.gridx = 0;
 			gbc.gridy = 0;
@@ -270,32 +290,31 @@ public class GeoVolumeGUI extends JPanel {
 			JLabel lblRadius_a = new JLabel("Input Radius a");
 			JLabel lblRadius_b = new JLabel("Input Radius b");
 			JLabel lblHeight = new JLabel("Input Height");
-
+	
 			txtCylinderRadius_a = new JTextField(8);
 			txtCylinderRadius_b = new JTextField(8);
-
 			txtCylinderHeight = new JTextField(8);
-
+	
 			GridBagLayout gridBag = new GridBagLayout();
 			typePanel.setLayout(gridBag);
 			GridBagConstraints gbc = new GridBagConstraints();
-
+	
 			typePanel.add(lblRadius_a);
 			typePanel.add(lblRadius_b);
 			typePanel.add(lblHeight);
-
+	
 			typePanel.add(txtCylinderRadius_a);
 			typePanel.add(txtCylinderRadius_b);
-
+	
 			typePanel.add(txtCylinderHeight);
 			typePanel.add(lblMeasure);
 			typePanel.add(cmbMeasure);
-
+	
 			gbc.insets.top = 5;
 			gbc.insets.bottom = 5;
 			gbc.insets.left = 1;
 			gbc.insets.right = 8;
-
+	
 			gbc.anchor = GridBagConstraints.WEST;
 			gbc.gridx = 0;
 			gbc.gridy = 0;
@@ -315,6 +334,60 @@ public class GeoVolumeGUI extends JPanel {
 			gbc.gridx = 1;
 			gbc.gridy = 2;
 			gridBag.setConstraints(txtCylinderHeight, gbc);
+			gbc.gridx = 0;
+			gbc.gridy = 3;
+			gridBag.setConstraints(lblMeasure, gbc);
+			gbc.gridx = 1;
+			gbc.gridy = 3;
+			gridBag.setConstraints(cmbMeasure, gbc);
+		} else if (type.equals(EllIPSOID)) {
+			JLabel lblRadius_a = new JLabel("Input Radius a");
+			JLabel lblRadius_b = new JLabel("Input Radius b");
+			JLabel lblRadius_c = new JLabel("Input Radius c");
+	
+			// 使用类级别的成员变量
+			txtEllipsoidRadius_a = new JTextField(8);
+			txtEllipsoidRadius_b = new JTextField(8);
+			txtEllipsoidRadius_c = new JTextField(8);
+	
+			GridBagLayout gridBag = new GridBagLayout();
+			typePanel.setLayout(gridBag);
+			GridBagConstraints gbc = new GridBagConstraints();
+	
+			typePanel.add(lblRadius_a);
+			typePanel.add(lblRadius_b);
+			typePanel.add(lblRadius_c);
+			typePanel.add(lblMeasure);
+	
+			typePanel.add(txtEllipsoidRadius_a);
+			typePanel.add(txtEllipsoidRadius_b);
+			typePanel.add(txtEllipsoidRadius_c);
+			typePanel.add(cmbMeasure);
+	
+			gbc.insets.top = 5;
+			gbc.insets.bottom = 5;
+			gbc.insets.left = 1;
+			gbc.insets.right = 8;
+	
+			gbc.anchor = GridBagConstraints.WEST;
+			gbc.gridx = 0;
+			gbc.gridy = 0;
+			gridBag.setConstraints(lblRadius_a, gbc);
+			gbc.gridx = 1;
+			gbc.gridy = 0;
+			gridBag.setConstraints(txtEllipsoidRadius_a, gbc);
+			gbc.gridx = 0;
+			gbc.gridy = 1;
+			gridBag.setConstraints(lblRadius_b, gbc);
+			gbc.gridx = 1;
+			gbc.gridy = 1;
+			gridBag.setConstraints(txtEllipsoidRadius_b, gbc);
+			gbc.gridx = 0;
+			gbc.gridy = 2;
+			gridBag.setConstraints(lblRadius_c, gbc);
+			gbc.gridx = 1;
+			gbc.gridy = 2;
+			gridBag.setConstraints(txtEllipsoidRadius_c, gbc);
 			gbc.gridx = 0;
 			gbc.gridy = 3;
 			gridBag.setConstraints(lblMeasure, gbc);
