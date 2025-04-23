@@ -74,8 +74,8 @@ public class FileUtil {
    	 Reads data from a given file into a Vector
    */
 
-  public Vector fileToVector(String fileName) {
-    Vector v = new Vector();
+  public Vector<String> fileToVector(String fileName) {
+    Vector<String> v = new Vector<>();
     String inputLine;
     try {
       File inFile = new File(fileName);
@@ -101,7 +101,7 @@ public class FileUtil {
    	 Writes data from an input vector to a given file
    */
 
-  public void vectorToFile(Vector v, String fileName) {
+  public void vectorToFile(Vector<String> v, String fileName) {
     for (int i = 0; i < v.size(); i++) {
       writeToFile(fileName, (String) v.elementAt(i), true,
                   true);
@@ -114,7 +114,7 @@ public class FileUtil {
 
   public void copyUniqueElements(String sourceFile,
       String resultFile) {
-    Vector v = fileToVector(sourceFile);
+    Vector<String> v = fileToVector(sourceFile);
     v = MiscUtil.removeDuplicates(v);
     vectorToFile(v, resultFile);
   }

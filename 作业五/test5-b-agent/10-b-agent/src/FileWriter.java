@@ -7,12 +7,12 @@
 
 
 
-import java.util.*;
+// import java.util.*;s
 
 public class FileWriter implements MessageWriter {
 
   public void logMsg(String lastNm, String firstNm, String code) {
-    FileUtil futil = new FileUtil();
-    futil.writeToFile("log.txt",lastNm + " " + firstNm + " " +code, true, true);
+    FileUtil fileUtil = new FileUtil();
+    fileUtil.writeToFile("log.txt",lastNm + " " + firstNm + " " +code, true, true);
   }
 }

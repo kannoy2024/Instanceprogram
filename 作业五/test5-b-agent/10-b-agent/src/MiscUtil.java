@@ -1,9 +1,9 @@
-import java.io.*;
+// import java.io.*;
 import java.util.*;
 
 public class MiscUtil {
 
-	public static boolean hasDuplicates(Vector v) {
+	public static boolean hasDuplicates(Vector<String> v) {
 		int i = 0;
 		int j = 0;
 		boolean duplicates = false;
@@ -21,12 +21,12 @@ public class MiscUtil {
 		return duplicates;
 	}
 
-	public static Vector removeDuplicates(Vector s) {
+	public static Vector<String> removeDuplicates(Vector<String> s) {
 		int i = 0;
 		int j = 0;
 		boolean duplicates = false;
 
-		Vector v = new Vector();
+		Vector<String> v = new Vector<>();
 
 		for (i = 0; i < s.size(); i++) {
 			duplicates = false;
@@ -45,14 +45,14 @@ public class MiscUtil {
 		return v;
 	}
 
-	public static Vector removeDuplicateDomains(Vector s) {
+	public static Vector<String> removeDuplicateDomains(Vector<String> s) {
 		int i = 0;
 		int j = 0;
 		boolean duplicates = false;
 		String str1 = "";
 		String str2 = "";
 
-		Vector v = new Vector();
+		Vector<String> v = new Vector<>();
 
 		for (i = 0; i < s.size(); i++) {
 			duplicates = false;
@@ -82,7 +82,7 @@ public class MiscUtil {
 		return v;
 	}
 
-	public static boolean areVectorsEqual(Vector a, Vector b) {
+	public static boolean areVectorsEqual(Vector<String> a, Vector<String> b) {
 		if (a.size() != b.size()) {
 			return false;
 		}
@@ -100,12 +100,12 @@ public class MiscUtil {
 		return identical;
 	}
 
-	public static Vector removeDuplicates(Vector a, Vector b) {
+	public static Vector<String> removeDuplicates(Vector<String> a, Vector<String> b) {
 
 		int i = 0;
 		int j = 0;
 		boolean present = true;
-		Vector v = new Vector();
+		Vector<String> v = new Vector<>();
 
 		for (i = 0; i < a.size(); i++) {
 			present = false;
