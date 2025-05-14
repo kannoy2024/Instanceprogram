@@ -2,5 +2,5 @@
 
 
 public interface SortAlgorithm {
-     int[] sort(int[] nums, Context ct);
+     int[] sort(int[] digit, Context ct);
 }

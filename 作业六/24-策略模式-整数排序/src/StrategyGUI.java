@@ -19,10 +19,18 @@ public class StrategyGUI extends JFrame {
 
    public static final String SORT = "Sort";
    public static final String EXIT = "Exit";
-   public static final String BUBBLE = "Bubble Sort";
-   public static final String HEAP = "Heap Sort";
-   public static final String INSERT = "Insertion Sort";
-   public static final String QUICK = "Quick Sort";
+   public static final String BUBBLE = "Bubble Sort";// 冒泡排序
+   public static final String HEAP = "Heap Sort";// 堆排序
+   public static final String INSERT = "Insertion Sort";// 插入排序
+   public static final String QUICK = "Quick Sort";// 快速排序
+
+   //添加的算法
+   public static final String SELECTION = "Selection Sort";// 选择排序
+   public static final String SHELL = "Shell Sort";// 希尔排序
+   public static final String MERGE = "Merge Sort";// 归并排序
+   public static final String BUCKET = "Bucket Sort";// 桶排序
+   public static final String COUNTING = "Counting Sort";// 计数排序
+   public static final String RADIX = "Radix Sort";//  基数排序
 
    public StrategyGUI() {
       super("Strategy Pattern- Sorting Algorithms. ");
@@ -45,6 +53,12 @@ public class StrategyGUI extends JFrame {
       cmbAlgorithm.addItem(HEAP);
       cmbAlgorithm.addItem(INSERT);
       cmbAlgorithm.addItem(QUICK);
+      cmbAlgorithm.addItem(SELECTION);
+      cmbAlgorithm.addItem(SHELL);
+      cmbAlgorithm.addItem(MERGE);
+      cmbAlgorithm.addItem(BUCKET);
+      cmbAlgorithm.addItem(COUNTING);
+      cmbAlgorithm.addItem(RADIX);
 
       lblAlgorithm = new JLabel("Sort Algorithm");
 
@@ -108,6 +122,7 @@ public class StrategyGUI extends JFrame {
    }
 
    private void setUpScrollPanes() {
+      txtForInfo = new JTextArea("Sorted Array will be shown here.", 20, 30); // 先初始化
       txtForInfo.setBorder(BorderFactory.createRaisedBevelBorder());
 
       txtForInfo = new JTextArea("Sorted Array will be shown here.", 20, 30);
@@ -164,6 +179,24 @@ public class StrategyGUI extends JFrame {
             if (type.equals(QUICK)) {
                sa = new QuickSort();
             }
+            if (type.equals(SELECTION)) {
+               sa = new SelectionSort();
+            }
+            if (type.equals(SHELL)) {
+               sa = new ShellSort();
+            }
+            if (type.equals(MERGE)) {
+               sa = new MergeSort();
+            }
+            if (type.equals(BUCKET)) {
+               sa = new BucketSort();
+            }
+            if (type.equals(COUNTING)) {
+               sa = new CountingSort();
+            }
+            if (type.equals(RADIX)) {
+               sa = new RadixSort();
+            }
 
             context = new Context(sa);
 
@@ -181,7 +214,7 @@ public class StrategyGUI extends JFrame {
 
    public static void main(String args[]) {
       try {
-         UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+         UIManager.setLookAndFeel("com.sun.java.swing.piaf.windows.WindowsLookAndFeel");
       } catch (Exception evt) {
       }
 
