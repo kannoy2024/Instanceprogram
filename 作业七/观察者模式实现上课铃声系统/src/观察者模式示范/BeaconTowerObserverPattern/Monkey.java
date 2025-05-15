@@ -1,6 +1,6 @@
-package ch14_Observerpattern.BeaconTowerOberverPattern;
+package BeaconTowerObserverPattern;;
 
-public class Monkey implements Oberver{
+public class Monkey implements Observer{
 	private String name;
 	private Observable observable;
 	public Monkey(String name, Observable observable) {
@@ -15,17 +15,16 @@ public class Monkey implements Oberver{
 	}
 	@Override
 	public void enterBeaconTower(Observable beaconTower) {
-		// TODO Auto-generated method stub
+	
 		beaconTower.attach(this);
 	}
 	@Override
 	public void leaveBeaconTower(Observable beaconTower) {
-		// TODO Auto-generated method stub
 		beaconTower.detach(this);
 	}
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
+	
 		System.out.println("吱吱吱");
 	}
 }

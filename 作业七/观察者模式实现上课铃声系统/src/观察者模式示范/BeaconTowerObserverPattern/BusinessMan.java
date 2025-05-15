@@ -1,6 +1,6 @@
-package ch14_Observerpattern.BeaconTowerOberverPattern;
+package BeaconTowerObserverPattern;
 
-public class BusinessMan implements Oberver{
+public class BusinessMan implements Observer{
     private String name;
     private Observable sub;
     public void enterBeaconTower(Observable beaconTower) {

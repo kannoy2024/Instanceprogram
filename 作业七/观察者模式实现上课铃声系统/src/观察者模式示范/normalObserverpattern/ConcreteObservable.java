@@ -1,4 +1,4 @@
-package ch14_Observerpattern.normalObserverpattern;
+package normalObserverPattern;
 
 import java.util.ArrayList;
 import java.util.List;

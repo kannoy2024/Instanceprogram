@@ -1,4 +1,4 @@
-package ch14_Observerpattern.normalObserverpattern;
+package normalObserverPattern;
 
 public class ConcreteObserver extends Observer {
     private String name;

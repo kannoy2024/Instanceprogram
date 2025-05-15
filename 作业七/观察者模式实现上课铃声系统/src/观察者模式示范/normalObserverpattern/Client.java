@@ -1,9 +1,8 @@
-package ch14_Observerpattern.normalObserverpattern;
+package normalObserverPattern;
 
 public class Client {
 
     public static void main(String[] args) {
-        // TODO Auto-generated method stub
     	Observable observable = new ConcreteObservable();
 
         observable.attach(new ConcreteObserver("X", observable));

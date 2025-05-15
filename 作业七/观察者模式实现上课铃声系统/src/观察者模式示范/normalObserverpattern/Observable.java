@@ -1,4 +1,4 @@
-package ch14_Observerpattern.normalObserverpattern;
+package normalObserverPattern;
 
 public abstract class Observable  {
     protected String State;

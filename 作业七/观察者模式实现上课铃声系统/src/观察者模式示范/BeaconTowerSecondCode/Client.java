@@ -1,10 +1,9 @@
-package ch14_Observerpattern.BeaconTowerSecondCode;
+package BeaconTowerSecondCode;
 
 
 public class Client {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		BeaconTower beaconTower=new BeaconTower();//为了预防外敌入侵，卫青建立一个烽火台
 		Troop t1=new Troop("010201", beaconTower);//为了抵御外敌部署了编号为
 		Troop t2=new Troop("010202", beaconTower);//为了抵御外敌部署了编号为

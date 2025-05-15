@@ -1,4 +1,4 @@
-package ch14_Observerpattern.BeaconTowerSecondCode;
+package BeaconTowerSecondCode;
 
 public class BusinessMan {
     private String name;

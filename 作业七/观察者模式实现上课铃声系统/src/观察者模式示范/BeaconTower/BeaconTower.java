@@ -1,4 +1,4 @@
-
+package BeaconTower;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,11 +10,11 @@ public class BeaconTower {
 		Troops.add(tp);
 	}
 
-	public void dettach(Troop tp) {
+	public void detach(Troop tp) {
 		Troops.remove(tp);
 	}
 
-	public void notifys() { // 通知军队
+	public void sendNotification() { // 通知军队
 		System.out.println("\n烽火台状态改变，开始新一轮的通知：");
 
 		for (Troop o : Troops) {
@@ -28,6 +28,6 @@ public class BeaconTower {
 
 	public void setState(String state) {
 		this.state = state;
-		notifys();
+		sendNotification();
 	}
 }

@@ -1,7 +1,7 @@
-package ch14_Observerpattern.BeaconTowerOberverPattern;
+package BeaconTowerObserverPattern;;
 
 
-public interface Oberver {
+public interface Observer {
 	abstract public void enterBeaconTower(Observable beaconTower);
 	abstract public void leaveBeaconTower(Observable beaconTower);
 	abstract public void update();

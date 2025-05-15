@@ -1,14 +1,15 @@
-
-
+package BeaconTower;
 public class Client {
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		BeaconTower beaconTower=new BeaconTower();//为了预防外敌入侵，卫青建立一个烽火台
 		Troop t1=new Troop("010201X", beaconTower);//为了抵御外敌部署了编号为
 		Troop t2=new Troop("010202X", beaconTower);//为了抵御外敌部署了编号为
 		System.out.println("\n敌人来袭！！！！！");
 		beaconTower.setState("发现敌情，烧起黑色狼烟"); 
 		
+		// Troop t1 = new Troop("010201X", beaconTower);
+// System.out.println("部队 " + t1.getId() + " 已部署");
+
 		System.out.println("\n战事紧张，友军来协防");
 		Troop t3=new Troop("部队三XXXXXX");
 		t3.enterBeaconTower(beaconTower); //战事吃紧，从外地调来来增援军

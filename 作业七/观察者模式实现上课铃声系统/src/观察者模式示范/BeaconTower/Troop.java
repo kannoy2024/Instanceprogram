@@ -1,4 +1,4 @@
-
+package BeaconTower;
 public class Troop {
     private String name;
     private BeaconTower sub;
@@ -7,7 +7,7 @@ public class Troop {
     	sub=beaconTower;
     }
     public void leaveBeaconTower(BeaconTower beaconTower) {
-    	beaconTower.dettach(this);//换防了，去别的区域防御敌人了
+    	beaconTower.detach(this);//换防了，去别的区域防御敌人了
     	sub=null;//移动过程中显然没有烽火台能通知他
     }
     public Troop(String name) {

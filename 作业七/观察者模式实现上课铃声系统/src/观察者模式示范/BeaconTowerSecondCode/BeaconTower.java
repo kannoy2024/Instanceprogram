@@ -1,4 +1,4 @@
-package ch14_Observerpattern.BeaconTowerSecondCode;
+package BeaconTowerSecondCode;
 
 import java.util.ArrayList;
 import java.util.List;
