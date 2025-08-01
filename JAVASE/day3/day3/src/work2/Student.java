@@ -3,9 +3,9 @@ package work2;
 public class Student {
     private String name;
     private int age;
-    private String sex;
-    private String id;
-    private String grade;
+    private double height;
+    private boolean isMarried;
+    private char sex;
     public String getName() {
         return name;
     }
@@ -18,38 +18,39 @@ public class Student {
     public void setAge(int age) {
         this.age = age;
     }
-    public String getSex() {
+    public double getHeight() {
+        return height;
+    }
+    public void setHeight(double height) {
+        this.height = height;
+    }
+    public boolean isMarried() {
+        return isMarried;
+    }
+    public void setMarried(boolean isMarried) {
+        this.isMarried = isMarried;
+    }
+    public char getSex() {
         return sex;
     }
-    public void setSex(String sex) {
+    public void setSex(char sex) {
         this.sex = sex;
-    }
-    public String getId() {
-        return id;
-    }
-    public void setId(String id) {
-        this.id = id;
-    }
-    public String getGrade() {
-        return grade;
-    }
-    public void setGrade(String grade) {
-        this.grade = grade;
     }
     public Student() {
     }
-    public Student(String name, int age, String sex, String id, String grade) {
+    public Student(String name, int age, double height, boolean isMarried, char sex) {
         this.name = name;
         this.age = age;
+        this.height = height;
+        this.isMarried = isMarried;
         this.sex = sex;
-        this.id = id;
-        this.grade = grade;
     }
     @Override
     public String toString() {
-        return "Student [name=" + name + ", age=" + age + ", sex=" + sex + ", id=" + id + ", grade=" + grade + "]";
+        return "Student [name=" + name + ", age=" + age + ", height=" + height + ", isMarried=" + isMarried + ", sex="
+                + sex + ", getName()=" + getName() + ", getAge()=" + getAge() + ", getHeight()=" + getHeight()
+                + ", isMarried()=" + isMarried() + ", getSex()=" + getSex() + ", toString()=" + super.toString() + "]";
     }
-
-
+    
     
 }
