@@ -4,10 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 
 public class doudizhu {
+    private static final Logger logger = Logger.getLogger("LogBackDemo");
+
     public static void main(String[] args) {
         // 1.准备牌
+        logger.info("准备牌");
         Map<Integer, String> poker = new HashMap<>();
         List<Integer> pokerNumber = new ArrayList<>();
 
@@ -32,11 +36,13 @@ public class doudizhu {
 
         System.out.println(poker);
         // 2.洗牌
+
+        logger.info("开始洗牌");
         Collections.shuffle(pokerNumber);
 
         System.out.println(pokerNumber);
         // 3.发牌
-
+        logger.info("开始发牌");
         TreeSet<Integer> player01 = new TreeSet<>();
 
         TreeSet<Integer> player02 = new TreeSet<>();
