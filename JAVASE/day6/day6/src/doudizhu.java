@@ -1,13 +1,14 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
-import java.util.logging.Logger;
-
 public class doudizhu {
-    private static final Logger logger = Logger.getLogger("LogBackDemo");
+    private static final Logger logger = LoggerFactory.getLogger("测试");
 
     public static void main(String[] args) {
         // 1.准备牌
