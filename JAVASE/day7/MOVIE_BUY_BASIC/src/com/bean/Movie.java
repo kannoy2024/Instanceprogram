@@ -1,5 +1,6 @@
 package com.bean;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
@@ -9,12 +10,12 @@ public class Movie {
     private  double time;
     private double price;
     private  int number;
-    private Date startTime;
+    private LocalDateTime startTime;
 
     public Movie() {
     }
 
-    public Movie(String name, String actor, double price, double time, int number, Date startTime) {
+    public Movie(String name, String actor, double price, double time, int number, LocalDateTime startTime) {
         this.name = name;
         this.actor = actor;
         this.price = price;
@@ -87,11 +88,11 @@ public class Movie {
         this.price = price;
     }
 
-    public Date getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 }

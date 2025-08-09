@@ -7,6 +7,8 @@ import com.bean.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class MovieSystem {
@@ -48,15 +50,47 @@ public class MovieSystem {
         b.setAddress("火星6号2B二层");
         b.setShopName("甜甜圈国际影城");
         ALL_USERS.add(b);
-        // 注意，商家一定需要加入到店铺排片信息中去
-        // 后期在为此商家添加排片信息
+
+        // 为包租公影城添加更多电影
         List<Movie> movies = new ArrayList<>();
+
         Movie movie1 = new Movie();
         movie1.setName("七品芝麻官");
-        movie1.setPrice(200);
+        movie1.setActor("周星驰、吴孟达、张敏");
         movie1.setTime(100);
+        movie1.setPrice(200);
+        movie1.setNumber(100);  // 剩余票数
+        movie1.setStartTime(LocalDateTime.of(2025, 8, 9, 16, 6, 0)); // 2025-08-09 16:06:00
         movies.add(movie1);
-        ALL_MOVIES.put(b, movies); // b = []
+
+        Movie movie2 = new Movie();
+        movie2.setName("功夫");
+        movie2.setActor("周星驰、元秋、元华");
+        movie2.setTime(120);
+        movie2.setPrice(180);
+        movie2.setNumber(150);  // 剩余票数
+        movie2.setStartTime(LocalDateTime.of(2025, 8, 10, 14, 30, 0)); // 2025-08-10 14:30:00
+        movies.add(movie2);
+
+        Movie movie3 = new Movie();
+        movie3.setName("大话西游");
+        movie3.setActor("周星驰、朱茵、吴孟达");
+        movie3.setPrice(150);
+        movie3.setTime(110);
+        movie3.setNumber(80);  // 剩余票数
+        movie3.setStartTime(LocalDateTime.of(2025, 8, 11, 19, 0, 0)); // 2025-08-11 19:00:00
+        movies.add(movie3);
+
+        Movie movie4 = new Movie();
+        movie4.setName("唐伯虎点秋香");
+        movie4.setActor("周星驰、巩俐、郑佩佩");
+        movie4.setPrice(160);
+        movie4.setTime(95);
+        movie4.setNumber(120);  // 剩余票数
+        movie4.setStartTime(LocalDateTime.of(2025, 8, 12, 13, 15, 0)); // 2025-08-12 13:15:00
+        movies.add(movie4);
+
+        ALL_MOVIES.put(b, movies);
 
         Business b2 = new Business();
         b2.setLoginName("baozupo888");
@@ -68,10 +102,49 @@ public class MovieSystem {
         b2.setAddress("火星8号8B八层");
         b2.setShopName("巧克力国际影城");
         ALL_USERS.add(b2);
-        // 注意，商家一定需要加入到店铺排片信息中去
+
+        // 为包租婆影城添加更多电影
         List<Movie> movies3 = new ArrayList<>();
-        ALL_MOVIES.put(b2, movies3); // b2 = []
+
+        Movie movie5 = new Movie();
+        movie5.setName("无间道");
+        movie5.setActor("刘德华、梁朝伟、黄秋生");
+        movie5.setPrice(220);
+        movie5.setTime(130);
+        movie5.setNumber(90);  // 剩余票数
+        movie5.setStartTime(LocalDateTime.of(2025, 8, 13, 20, 30, 0)); // 2025-08-13 20:30:00
+        movies3.add(movie5);
+
+        Movie movie6 = new Movie();
+        movie6.setName("英雄本色");
+        movie6.setActor("周润发、狄龙、张国荣");
+        movie6.setPrice(190);
+        movie6.setTime(105);
+        movie6.setNumber(70);  // 剩余票数
+        movie6.setStartTime(LocalDateTime.of(2025, 8, 14, 18, 45, 0)); // 2025-08-14 18:45:00
+        movies3.add(movie6);
+
+        Movie movie7 = new Movie();
+        movie7.setName("东成西就");
+        movie7.setActor("张国荣、林青霞、梁朝伟");
+        movie7.setPrice(170);
+        movie7.setTime(100);
+        movie7.setNumber(110);  // 剩余票数
+        movie7.setStartTime(LocalDateTime.of(2025, 8, 15, 15, 20, 0)); // 2025-08-15 15:20:00
+        movies3.add(movie7);
+
+        Movie movie8 = new Movie();
+        movie8.setName("少林足球");
+        movie8.setActor("周星驰、赵薇、吴孟达");
+        movie8.setPrice(160);
+        movie8.setTime(115);
+        movie8.setNumber(130);  // 剩余票数
+        movie8.setStartTime(LocalDateTime.of(2025, 8, 16, 16, 10, 0)); // 2025-08-16 16:10:00
+        movies3.add(movie8);
+
+        ALL_MOVIES.put(b2, movies3);
     }
+
 
     public static void main(String[] args) {
         showMain();
@@ -366,6 +439,7 @@ public class MovieSystem {
 
             //获取商家对象（key元素）
             Business business = entry.getKey();
+            System.out.println("===========================================");
             System.out.print(business.getUserName() + "\t\t");
             System.out.print("电话: " + business.getPhone() + "\t\t");
             System.out.println("地址:" + business.getAddress());
@@ -389,7 +463,6 @@ public class MovieSystem {
     public static void selectMovieByName(){}
 
     public static void buyTicket(User loginUser){
-
     }
     private static void showBusinessMain(User loginUser){
         while(true){
@@ -429,6 +502,7 @@ public class MovieSystem {
 
     public static void showBusinessInfo(User loginUser){
         System.out.println("============商家详情界面===================");
+
         LOGGER.info(loginUser.getUserName() + "商家，正在看自己的详情~~");
 
         System.out.print(loginUser.getUserName() + "\t\t");
@@ -441,7 +515,7 @@ public class MovieSystem {
         System.out.println("片名\t\t主演\t\t时长\t\t评分\t\t票价\t\t余票数量\t\t放映时间");
         //遍历集合（电影列表）
         List<Movie> movies = ALL_MOVIES.get(business);
-        LOGGER.trace(String.valueOf(movies));//仅在开发中使用（通过设置日志级别，可以关闭输出）
+        LOGGER.trace(String.valueOf(movies));
 
         for (Movie movie : movies) {
             System.out.print(movie.getName() + "\t");
@@ -453,7 +527,100 @@ public class MovieSystem {
             System.out.println(movie.getStartTime());
         }
     }
-    public static void addMovie(User loginUser){}
+
+
+    public static void addMovie(User loginUser){
+        System.out.println("============商家添加电影界面===================");
+        LOGGER.info(loginUser.getUserName() + "商家，正在添加电影信息");
+        Business business  =(Business) loginUser;
+
+        System.out.println("请输入电影名称");
+        String name = SC.nextLine();
+        List<Movie> movies = ALL_MOVIES.get(business);
+        LOGGER.trace(String.valueOf(movies));
+        for (Movie movie : movies) {
+            if(movie.getName().equals(name)){
+                System.out.println("电影已经存在，请不要重复添加");
+                return;
+            }
+        }
+
+
+        System.out.println("请输入电影主演");
+        String actor = SC.nextLine();
+
+
+        System.out.println("请输入电影票价");
+        double price ;
+        while(true){
+            try {
+                price = Double.parseDouble(SC.nextLine());
+                if(price<=0){
+                    System.out.println("票价必须大于零！");
+                    continue;
+                }
+                break;
+            }catch (Exception e){
+                System.out.println("请输入有效票价！");
+            }
+        }
+
+        System.out.println("请输入电影时长");
+        double  time ;
+        while (true){
+            try {
+                time = Double.parseDouble(SC.nextLine());
+                if(time<0){
+                    System.out.println("电影时长必须大于零！");
+                    continue;
+                }
+                break;
+            }catch (Exception e){
+                System.out.println("请输入正确的时间格式");
+            }
+        }
+
+        System.out.println("请输入剩余票数");
+        int number ;
+        while (true){
+            try {
+                number = Integer.parseInt(SC.nextLine());
+                if (number<0){
+                    System.out.println("剩余票数必须大于零");
+                    continue;
+                }
+                break;
+            }catch (Exception e){
+                System.out.println("请输入正确的票数");
+            }
+        }
+
+
+        System.out.println("请输入电影开始时间（格式：yyyy-MM-dd HH:mm）");
+        LocalDateTime startTime ;
+        while (true) {
+            try {
+                String timeInput = SC.nextLine();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                startTime = LocalDateTime.parse(timeInput, formatter);
+                break;
+            } catch (Exception e) {
+                System.out.println("时间格式不正确，请按 yyyy-MM-dd HH:mm 格式输入，例如：2025-08-15 14:30");
+            }
+        }
+
+
+        Movie movie = new Movie();
+        movie.setName(name);
+        movie.setActor(actor);
+        movie.setPrice(price);
+        movie.setTime(time);
+        movie.setNumber(number);
+        movie.setStartTime(startTime); // 使用LocalDateTime
+
+        movies.add(movie);
+        System.out.println("电影《" + name + "》添加成功！");
+    }
     public static void removeMovie(User loginUser){}
     public static void updateMovie(User loginUser){}
     public static User getUserByLoginName(String loginName){
