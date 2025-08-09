@@ -414,7 +414,7 @@ public class MovieSystem {
                     showAllMovie();
                     break;
                 case "2":
-                    selectMovieByName();
+                    selectMovieByName(loginUser);
                     break;
                 case "3":
                     break;
@@ -460,7 +460,50 @@ public class MovieSystem {
         }
     }
 
-    public static void selectMovieByName(){}
+    public static void selectMovieByName(User loginUser) {
+        System.out.println("============用户查询电影界面===================");
+        LOGGER.info(loginUser.getUserName() + "用户，正在根据名字查询电影");
+
+        // 获取所有电影（从商家处获取）
+        List<Movie> allMovies = new ArrayList<>();
+        for (List<Movie> businessMovies : ALL_MOVIES.values()) {
+            if (businessMovies != null) {
+                allMovies.addAll(businessMovies);
+            }
+        }
+
+        if (allMovies.isEmpty()) {
+            System.out.println("当前没有可以查询的电影！");
+            return;
+        }
+
+        System.out.println("请输入要查询的电影名称：");  // 修改了提示语
+        String name = SC.nextLine();
+
+        Movie targetMovie = null;
+        for (Movie movie : allMovies) {
+            if (movie.getName().equals(name)) {
+                targetMovie = movie;
+                break;
+            }
+        }
+
+        if (targetMovie == null) {
+            System.out.println("未找到电影《" + name + "》");
+            return;
+        }
+
+        // 显示电影信息
+        System.out.println("当前电影信息：");
+        System.out.println("名称：" + targetMovie.getName());
+        System.out.println("主演：" + targetMovie.getActor());
+        System.out.println("票价：" + targetMovie.getPrice());
+        System.out.println("时长：" + targetMovie.getTime() + "分钟");
+        System.out.println("剩余票数：" + targetMovie.getNumber());
+        System.out.println("开始时间：" + targetMovie.getStartTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+
+        LOGGER.info("电影查询成功");
+    }
 
     public static void buyTicket(User loginUser){
     }
@@ -621,8 +664,165 @@ public class MovieSystem {
         movies.add(movie);
         System.out.println("电影《" + name + "》添加成功！");
     }
-    public static void removeMovie(User loginUser){}
-    public static void updateMovie(User loginUser){}
+    public static void removeMovie(User loginUser) {
+        System.out.println("============商家删除电影界面===================");
+        LOGGER.info(loginUser.getUserName() + "商家，正在删除电影");
+        Business business = (Business) loginUser;
+
+        List<Movie> movies = ALL_MOVIES.get(business);
+        if (movies.isEmpty()) {
+            System.out.println("当前没有可删除的电影！");
+            return;
+        }
+
+        System.out.println("当前电影列表：");
+        movies.forEach(m -> System.out.println("《" + m.getName() + "》"));
+
+        System.out.println("请输入要删除的电影名称：");
+        String name = SC.nextLine();
+
+        // 查找并删除电影
+        Iterator<Movie> iterator = movies.iterator();
+        boolean found = false;
+        while (iterator.hasNext()) {
+            Movie movie = iterator.next();
+            if (movie.getName().equals(name)) {
+                iterator.remove();
+                found = true;
+                break;
+            }
+        }
+
+        if (found) {
+            System.out.println("电影《" + name + "》已删除！");
+            LOGGER.info("电影《" + name + "》已删除");
+        } else {
+            System.out.println("未找到电影《" + name + "》");
+        }
+    }
+    public static void updateMovie(User loginUser) {
+        System.out.println("============商家修改电影界面===================");
+        LOGGER.info(loginUser.getUserName() + "商家，正在修改电影信息");
+        Business business = (Business) loginUser;
+
+        // 显示当前商家的所有电影
+        List<Movie> movies = ALL_MOVIES.get(business);
+        if (movies.isEmpty()) {
+            System.out.println("当前没有可修改的电影！");
+            return;
+        }
+
+        System.out.println("当前电影列表：");
+        movies.forEach(m -> System.out.println("《" + m.getName() + "》 主演：" + m.getActor()));
+
+        System.out.println("请输入要修改的电影名称：");
+        String name = SC.nextLine();
+
+        // 查找电影
+        Movie targetMovie = null;
+        for (Movie movie : movies) {
+            if (movie.getName().equals(name)) {
+                targetMovie = movie;
+                break;
+            }
+        }
+
+        if (targetMovie == null) {
+            System.out.println("未找到电影《" + name + "》");
+            return;
+        }
+
+        // 修改电影信息
+        System.out.println("当前电影信息：");
+        System.out.println("名称：" + targetMovie.getName());
+        System.out.println("主演：" + targetMovie.getActor());
+        System.out.println("票价：" + targetMovie.getPrice());
+        System.out.println("时长：" + targetMovie.getTime() + "分钟");
+        System.out.println("剩余票数：" + targetMovie.getNumber());
+        System.out.println("开始时间：" + targetMovie.getStartTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+
+        System.out.println("请输入新的电影主演（直接回车保持原值）：");
+        String actor = SC.nextLine();
+        if (!actor.isEmpty()) {
+            targetMovie.setActor(actor);
+        }
+
+        // 修改票价
+        System.out.println("请输入新的电影票价（直接回车保持原值）：");
+        String priceInput = SC.nextLine();
+        if (!priceInput.isEmpty()) {
+            while (true) {
+                try {
+                    double price = Double.parseDouble(priceInput);
+                    if (price <= 0) {
+                        System.out.println("票价必须大于零！");
+                        continue;
+                    }
+                    targetMovie.setPrice(price);
+                    break;
+                } catch (Exception e) {
+                    System.out.println("请输入有效票价！");
+                }
+            }
+        }
+
+        // 修改时长
+        System.out.println("请输入新的电影时长（分钟，直接回车保持原值）：");
+        String timeInput = SC.nextLine();
+        if (!timeInput.isEmpty()) {
+            while (true) {
+                try {
+                    double time = Double.parseDouble(timeInput);
+                    if (time <= 0) {
+                        System.out.println("时长必须大于零！");
+                        continue;
+                    }
+                    targetMovie.setTime(time);
+                    break;
+                } catch (Exception e) {
+                    System.out.println("请输入有效时长！");
+                }
+            }
+        }
+
+        // 修改票数
+        System.out.println("请输入新的剩余票数（直接回车保持原值）：");
+        String numberInput = SC.nextLine();
+        if (!numberInput.isEmpty()) {
+            while (true) {
+                try {
+                    int number = Integer.parseInt(numberInput);
+                    if (number < 0) {
+                        System.out.println("票数不能为负数！");
+                        continue;
+                    }
+                    targetMovie.setNumber(number);
+                    break;
+                } catch (Exception e) {
+                    System.out.println("请输入有效票数！");
+                }
+            }
+        }
+
+        // 修改开始时间
+        System.out.println("请输入新的开始时间（格式：yyyy-MM-dd HH:mm，直接回车保持原值）：");
+        String timeStr = SC.nextLine();
+        if (!timeStr.isEmpty()) {
+            while (true) {
+                try {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                    LocalDateTime newTime = LocalDateTime.parse(timeStr, formatter);
+                    targetMovie.setStartTime(newTime);
+                    break;
+                } catch (Exception e) {
+                    System.out.println("时间格式不正确，请按 yyyy-MM-dd HH:mm 格式输入");
+                }
+            }
+        }
+
+        System.out.println("电影《" + name + "》修改成功！");
+        LOGGER.info("电影《" + name + "》信息已更新");
+    }
     public static User getUserByLoginName(String loginName){
         for (User user : ALL_USERS) {
             if(user.getLoginName().equals(loginName)){
