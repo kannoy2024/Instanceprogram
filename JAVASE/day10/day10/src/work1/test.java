@@ -13,7 +13,7 @@ public class test {
             FileInputStream file = new FileInputStream(
                     "F:\\Directory_of_files_used_for_testing_code\\Files_saved_in_ANSI_format.txt");
             InputStreamReader inputStream = new InputStreamReader(file, "GBK");
-            // 字符流缓冲流。并把转换流作为参数传递。
+            // 字节流缓冲流。并把转换流作为参数传递。
             BufferedReader bufferedReader = new BufferedReader(inputStream);
 
             String line = bufferedReader.readLine();
