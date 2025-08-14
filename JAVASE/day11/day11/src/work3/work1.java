@@ -9,7 +9,7 @@ public class work1 {
     public static void main(String[] args) throws IOException {
         ServerSocket ss = new ServerSocket(9999);
         System.out.println("等待客户端连接...");
-        Socket socket = ss.accept();
+        Socket socket = ss.accept();//阻塞程序
         System.out.println("客户端连接成功");
         System.out.println("客户端信息：" + socket.getInetAddress().getHostAddress());
         InputStream is = socket.getInputStream();
