@@ -30,7 +30,7 @@ public class YunPanServiceImp implements YunPanService {
         //读取配置文件中端口信息，初始化服务端
         bundle = ResourceBundle.getBundle("yunpan");
         // 8888
-        int port = Integer.parseInt(bundle.getString("serverPort"));
+        int port = Integer.parseInt(bundle.getString("serverPort"));//用包装类将一个String转换成Int
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
