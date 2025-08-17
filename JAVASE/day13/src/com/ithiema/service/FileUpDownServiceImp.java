@@ -155,12 +155,48 @@ public class FileUpDownServiceImp implements FileUpDownService {
     }
 
     // 文件下载
-    @Override
     public void downloadFile(File file) {
+        // 创建服务器连接
+        try (Socket socket = new Socket("127.0.0.1", 8888);
+             OutputStream netOut = socket.getOutputStream();
+             InputStream netIn = socket.getInputStream()) {
+
+            // 构建下载协议（使用相对路径）
+            String relativePath = getRelativePath(file);
+            String downloadAgreement = AgreementUtil.getAgreement(
+                    "DOWNLOAD", relativePath, null, null);
+
+            // 发送下载协议
+            AgreementUtil.sendAgreement(netOut, downloadAgreement);
+
+            // 读取服务器响应协议
+            String agreementLine = AgreementUtil.receiveAgreement(netIn);
+            String status = AgreementUtil.getStatus(agreementLine);
+
+            if ("OK".equals(status)) {
+                // 准备保存下载文件
+                File downloadFile = new File(downloadPath, file.getName());
+                try (FileOutputStream fos = new FileOutputStream(downloadFile)) {
+                    // 复制网络数据流到文件
+                    IOUtil.copy(netIn, fos);
+                    System.out.println("文件下载成功，保存位置: " + downloadFile.getAbsolutePath());
+                }
+            } else {
+                System.out.println("下载失败: " + AgreementUtil.getMessage(agreementLine));
+            }
+        } catch (IOException e) {
+            System.out.println("下载过程发生异常: " + e.getMessage());
+        }
     }
 
     // 文件上传
     @Override
     public void uploadFile(File upFile) {
+    }
+
+    private String getRelativePath(File file) {
+        String absolutePath = file.getAbsolutePath();
+        String rootPath = System.getProperty("user.dir") + File.separator + "root";
+        return absolutePath.replace(rootPath, "").replace(File.separator, "/");
     }
 }
