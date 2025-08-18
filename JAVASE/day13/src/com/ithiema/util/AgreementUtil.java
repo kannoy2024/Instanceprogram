@@ -51,9 +51,9 @@ public class AgreementUtil {
 
     // 接收协议
     public static String receiveAgreement(InputStream netIn) throws IOException {
-        //读取第一行数据
         BufferedReader br = new BufferedReader(new InputStreamReader(netIn));
-        String agreementContent = br.readLine();
-        return agreementContent;
+        return br.readLine();
     }
+
+
 }

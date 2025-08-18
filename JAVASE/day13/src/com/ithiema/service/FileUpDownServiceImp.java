@@ -2,6 +2,7 @@ package com.ithiema.service;
 
 import com.ithiema.exception.BusinessException;
 import com.ithiema.util.AgreementUtil;
+import com.ithiema.util.IOUtil;
 
 import java.io.*;
 import java.net.Socket;
@@ -113,7 +114,7 @@ public class FileUpDownServiceImp implements FileUpDownService {
              // 用来客户端读取服务端的数据
              InputStream netIn = socket.getInputStream();
              // 用来客户端给服务端发送数据
-             OutputStream netOut = socket.getOutputStream();
+             OutputStream netOut = socket.getOutputStream()
         ) {
             /*
                 获取了协议
@@ -192,11 +193,58 @@ public class FileUpDownServiceImp implements FileUpDownService {
     // 文件上传
     @Override
     public void uploadFile(File upFile) {
+        try (Socket socket = new Socket("127.0.0.1", 8888);
+             OutputStream netOut = socket.getOutputStream();
+             InputStream netIn = socket.getInputStream();
+             FileInputStream fis = new FileInputStream(upFile)) {
+
+            // 构建上传协议
+            String serverPath = getRelativePath(current);
+            String uploadAgreement = AgreementUtil.getAgreement(
+                    "UPLOAD", serverPath + "/" + upFile.getName(), null, null);
+
+            // 发送上传协议
+            AgreementUtil.sendAgreement(netOut, uploadAgreement);
+
+            // 读取服务器响应
+            String agreementLine = AgreementUtil.receiveAgreement(netIn);
+            String status = AgreementUtil.getStatus(agreementLine);
+
+            if ("OK".equals(status)) {
+                // 上传文件内容
+                IOUtil.copy(fis, netOut);
+                // 确保数据发送完毕
+                netOut.flush();
+
+                // 等待服务器完成处理
+                agreementLine = AgreementUtil.receiveAgreement(netIn);
+                status = AgreementUtil.getStatus(agreementLine);
+
+                if ("OK".equals(status)) {
+                    System.out.println("文件上传成功！");
+                } else {
+                    System.out.println("上传失败: " + AgreementUtil.getMessage(agreementLine));
+                }
+            } else {
+                System.out.println("服务器拒绝上传: " + AgreementUtil.getMessage(agreementLine));
+            }
+        } catch (IOException e) {
+            System.out.println("上传过程中发生错误: " + e.getMessage());
+        }
     }
 
+
+    // 获取文件相对路径（相对于root目录）
     private String getRelativePath(File file) {
+        File root = new File("root");
         String absolutePath = file.getAbsolutePath();
-        String rootPath = System.getProperty("user.dir") + File.separator + "root";
-        return absolutePath.replace(rootPath, "").replace(File.separator, "/");
+        String rootPath = root.getAbsolutePath();
+
+        // 计算相对路径
+        if (absolutePath.startsWith(rootPath)) {
+            String relativePath = absolutePath.substring(rootPath.length());
+            return relativePath.replace(File.separator, "/");
+        }
+        return absolutePath.replace(File.separator, "/");
     }
 }
