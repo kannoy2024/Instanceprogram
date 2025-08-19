@@ -97,6 +97,48 @@ public class FileUpDownServiceImp implements Runnable, FileUpDownService {
     // 文件上传功能
     @Override
     public void uploadFile(String agreement, InputStream netIn, OutputStream netOut) throws IOException {
+//        先要取得文件上传路径
+        String fileName = AgreementUtil.getFileName(agreement);
+//        将虚拟路径转换为服务器路径
+        String filePath = fileName.replace("root",rootDir.toString());
+        File targetFile = new File((filePath));
+
+//        检查文件是否存在
+        if(targetFile.exists()){
+//            如果已经存在就，封装协议信息传递给前端
+            String response = AgreementUtil.getAgreement("UPLOAD",fileName,"FAILED","文件已存在");
+            AgreementUtil.sendAgreement(netOut,response);
+            return;
+        }
+//        检查父文件目录是否存在，不存在则创建
+        File parentDir  = targetFile.getParentFile();
+        if(!parentDir.exists() && !parentDir.mkdirs()){
+            String response = AgreementUtil.getAgreement("UPLOAD",fileName,"FAILED","无法创建目录");
+            AgreementUtil.sendAgreement(netOut,response);
+            return;
+        }
+//如果前面的全部内容都通过了，那么就可以开始接受上传文件了
+        String readyResponse = AgreementUtil.getAgreement("UPLOAD",fileName,"READY","");
+        AgreementUtil.sendAgreement(netOut,readyResponse);
+
+
+        // 接收文件数据
+        try (FileOutputStream fileOut = new FileOutputStream(targetFile)) {
+            IOUtil.copy(netIn, fileOut);
+
+            // 上传完成后发送成功响应
+            String successResponse = AgreementUtil.getAgreement("UPLOAD", fileName, "OK", "文件上传成功");
+            AgreementUtil.sendAgreement(netOut, successResponse);
+        } catch (IOException e) {
+            // 删除可能已部分写入的文件
+            if (targetFile.exists()) {
+                targetFile.delete();
+            }
+
+            String errorResponse = AgreementUtil.getAgreement("UPLOAD", fileName, "FAILED", "文件上传失败: " + e.getMessage());
+            AgreementUtil.sendAgreement(netOut, errorResponse);
+            throw e;
+        }
     }
 
     // 文件下载功能
