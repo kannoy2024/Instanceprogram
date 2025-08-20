@@ -3,6 +3,8 @@ package com.itheima.service;
 import com.itheima.exception.BusinessException;
 import com.itheima.util.AgreementUtil;
 import com.itheima.util.IOUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.Socket;
@@ -13,7 +15,7 @@ import java.util.ResourceBundle;
     第一行是协议，第二行开始就是数据
  */
 public class FileUpDownServiceImp implements Runnable, FileUpDownService {
-
+    private static final Logger logger = LoggerFactory.getLogger(FileUpDownServiceImp.class);
     private final ResourceBundle bundle;
     private final File rootDir;
     private Socket socket;
@@ -37,22 +39,26 @@ public class FileUpDownServiceImp implements Runnable, FileUpDownService {
              InputStream netIn = socket.getInputStream();
              OutputStream netOut = socket.getOutputStream();
         ) {
+            logger.info("客户端连接: {}", socket.getRemoteSocketAddress());
             // 读协议
             final String agreement = AgreementUtil.receiveAgreement(netIn);
             // System.out.println("接收客户端数据：" + agreement);
-
+            logger.debug("收到协议: {}", agreement);
             // 解析字符串
             String type = AgreementUtil.getType(agreement);
             // System.out.println("解析字符串的数据类型:" + type);
             switch (type) {
                 case "SCAN"://客户端要浏览
                     scanDirectory(agreement, netIn, netOut);
+                    logger.info("处理查询请求");
                     break;
                 case "DOWNLOAD"://客户端要下载
                     downloadFile(agreement, netIn, netOut);
+                    logger.info("处理下载请求");
                     break;
                 case "UPLOAD"://客户端要上传
                     uploadFile(agreement, netIn, netOut);
+                    logger.info("处理上传请求");
                     break;
             }
         } catch (IOException e) {
@@ -94,48 +100,49 @@ public class FileUpDownServiceImp implements Runnable, FileUpDownService {
         }
     }
 
-    // 文件上传功能
+    // 文件上传功能（服务端修正）
     @Override
     public void uploadFile(String agreement, InputStream netIn, OutputStream netOut) throws IOException {
-//        先要取得文件上传路径
         String fileName = AgreementUtil.getFileName(agreement);
-//        将虚拟路径转换为服务器路径
-        String filePath = fileName.replace("root",rootDir.toString());
-        File targetFile = new File((filePath));
+        String filePath = fileName.replace("root", rootDir.toString());
+        File targetFile = new File(filePath);
 
-//        检查文件是否存在
-        if(targetFile.exists()){
-//            如果已经存在就，封装协议信息传递给前端
-            String response = AgreementUtil.getAgreement("UPLOAD",fileName,"FAILED","文件已存在");
-            AgreementUtil.sendAgreement(netOut,response);
+        // 检查文件是否存在
+        if (targetFile.exists()) {
+            String response = AgreementUtil.getAgreement("UPLOAD", fileName, "FAILED", "文件已存在");
+            logger.info("文件已经存在");
+            AgreementUtil.sendAgreement(netOut, response);
             return;
         }
-//        检查父文件目录是否存在，不存在则创建
-        File parentDir  = targetFile.getParentFile();
-        if(!parentDir.exists() && !parentDir.mkdirs()){
-            String response = AgreementUtil.getAgreement("UPLOAD",fileName,"FAILED","无法创建目录");
-            AgreementUtil.sendAgreement(netOut,response);
+        logger.info("要上传的文件不存在");
+        // 检查父目录
+        File parentDir = targetFile.getParentFile();
+        if (!parentDir.exists() && !parentDir.mkdirs()) {
+            String response = AgreementUtil.getAgreement("UPLOAD", fileName, "FAILED", "无法创建目录");
+            logger.info("无法创建目录");
+            AgreementUtil.sendAgreement(netOut, response);
             return;
         }
-//如果前面的全部内容都通过了，那么就可以开始接受上传文件了
-        String readyResponse = AgreementUtil.getAgreement("UPLOAD",fileName,"READY","");
-        AgreementUtil.sendAgreement(netOut,readyResponse);
-
-
+        logger.info("目录创建成功");
+        // 发送READY协议（准备接收）
+        String readyResponse = AgreementUtil.getAgreement("UPLOAD", fileName, "READY", "准备接收文件");
+        AgreementUtil.sendAgreement(netOut, readyResponse);
+        logger.info("准备接受文件");
         // 接收文件数据
         try (FileOutputStream fileOut = new FileOutputStream(targetFile)) {
+            // 接收文件数据
             IOUtil.copy(netIn, fileOut);
 
-            // 上传完成后发送成功响应
+            fileOut.flush();
+            logger.info("文件接收完成，准备发送成功响应");
+
+            // 发送最终OK协议
             String successResponse = AgreementUtil.getAgreement("UPLOAD", fileName, "OK", "文件上传成功");
             AgreementUtil.sendAgreement(netOut, successResponse);
+            logger.info("已发送成功响应");
         } catch (IOException e) {
-            // 删除可能已部分写入的文件
-            if (targetFile.exists()) {
-                targetFile.delete();
-            }
-
-            String errorResponse = AgreementUtil.getAgreement("UPLOAD", fileName, "FAILED", "文件上传失败: " + e.getMessage());
+            if (targetFile.exists()) targetFile.delete();
+            String errorResponse = AgreementUtil.getAgreement("UPLOAD", fileName, "FAILED", "上传失败: " + e.getMessage());
             AgreementUtil.sendAgreement(netOut, errorResponse);
             throw e;
         }
@@ -144,5 +151,80 @@ public class FileUpDownServiceImp implements Runnable, FileUpDownService {
     // 文件下载功能
     @Override
     public void downloadFile(String agreement, InputStream netIn, OutputStream netOut) throws IOException {
+//        先取得文件下载路径
+        String fileName = AgreementUtil.getFileName(agreement);
+        //        将虚拟路径转换为服务器路径
+        String filePath = fileName.replace("root",rootDir.toString());
+        File targetFile = new File((filePath));
+//        检查要下载的文件是否存在
+        if(!targetFile.exists()){
+//            如果不存在就，封装协议信息传递给前端
+            String response = AgreementUtil.getAgreement("DOWNLOAD",fileName,"FAILED","目标文件不存在!");
+            AgreementUtil.sendAgreement(netOut,response);
+            return;
+        }
+        // 检查是否为文件
+        if (!targetFile.isFile()) {
+            String response = AgreementUtil.getAgreement("DOWNLOAD", fileName, "FAILED", "目标路径不是文件!");
+            AgreementUtil.sendAgreement(netOut, response);
+            return;
+        }
+        // 检查文件大小是否可用
+        long fileSize = targetFile.length();
+        if (fileSize <= 0) {
+            String response = AgreementUtil.getAgreement("DOWNLOAD", fileName, "FAILED", "文件为空或无效!");
+            AgreementUtil.sendAgreement(netOut, response);
+            return;
+        }
+        // 发送READY协议，包含文件大小信息
+        String fileSizeStr = String.valueOf(fileSize);
+        String readyResponse = AgreementUtil.getAgreement("DOWNLOAD", fileName, "READY", fileSizeStr);
+        AgreementUtil.sendAgreement(netOut, readyResponse);
+
+
+        // 等待客户端的确认响应
+        String clientResponse = AgreementUtil.receiveAgreement(netIn);
+        String clientStatus = AgreementUtil.getStatus(clientResponse);
+
+        if (!"READY".equals(clientStatus)) {
+            // 客户端未准备好，中止传输
+            String errorResponse = AgreementUtil.getAgreement("DOWNLOAD", fileName, "FAILED", "客户端未准备好接收");
+            AgreementUtil.sendAgreement(netOut, errorResponse);
+            return;
+        }
+        // 开始传输文件
+        try (FileInputStream fileIn = new FileInputStream(targetFile)) {
+            // 使用固定缓冲区提高传输效率
+            byte[] buffer = new byte[8192]; // 8KB 缓冲区
+            long bytesSent = 0;
+            int readBytes;
+
+            // 实时显示传输进度（可选）
+            System.out.println("开始传输文件: " + fileName + " (" + fileSize + " bytes)");
+
+            while ((readBytes = fileIn.read(buffer)) != -1) {
+                netOut.write(buffer, 0, readBytes);
+                bytesSent += readBytes;
+
+                // 每传输1MB打印一次进度
+                if (bytesSent % (1024 * 1024) == 0) {
+                    System.out.printf("已传输: %.1f MB (%.1f%%)\n",
+                            bytesSent / (1024.0 * 1024.0),
+                            bytesSent * 100.0 / fileSize);
+                }
+            }
+
+            // 确保所有数据都已刷新到网络
+            netOut.flush();
+            System.out.println("文件传输完成");
+
+            // 发送最终成功响应
+            String successResponse = AgreementUtil.getAgreement("DOWNLOAD", fileName, "OK", "文件传输完成");
+            AgreementUtil.sendAgreement(netOut, successResponse);
+        } catch (IOException e) {
+            String errorResponse = AgreementUtil.getAgreement("DOWNLOAD", fileName, "FAILED", "下载失败: " + e.getMessage());
+            AgreementUtil.sendAgreement(netOut, errorResponse);
+            throw e;
+        }
     }
 }

@@ -3,9 +3,12 @@ package com.ithiema.service;
 import com.ithiema.exception.BusinessException;
 import com.ithiema.util.AgreementUtil;
 import com.ithiema.util.IOUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
@@ -21,6 +24,7 @@ public class FileUpDownServiceImp implements FileUpDownService {
      * 解释 : 其实就是服务器存储数据的文件夹路径
      * 服务器src根目录下的yunpan.properties中的 rootDir
      */
+    private static final Logger logger = LoggerFactory.getLogger(FileUpDownServiceImp.class);
     public File current = new File("root");
     private ResourceBundle bundle;
     private String downloadPath;// 下载的路径
@@ -157,30 +161,54 @@ public class FileUpDownServiceImp implements FileUpDownService {
 
     // 文件下载
     public void downloadFile(File file) {
-        // 创建服务器连接
         try (Socket socket = new Socket("127.0.0.1", 8888);
              OutputStream netOut = socket.getOutputStream();
              InputStream netIn = socket.getInputStream()) {
 
-            // 构建下载协议（使用相对路径）
+            // 发送下载请求
             String relativePath = getRelativePath(file);
             String downloadAgreement = AgreementUtil.getAgreement(
                     "DOWNLOAD", relativePath, null, null);
-
-            // 发送下载协议
             AgreementUtil.sendAgreement(netOut, downloadAgreement);
 
-            // 读取服务器响应协议
+            // 读取服务器响应
             String agreementLine = AgreementUtil.receiveAgreement(netIn);
             String status = AgreementUtil.getStatus(agreementLine);
 
-            if ("OK".equals(status)) {
-                // 准备保存下载文件
+            if ("READY".equals(status)) {
+                // 解析文件大小
+                long fileSize = Long.parseLong(AgreementUtil.getMessage(agreementLine));
+
+                // 发送确认协议
+                String confirm = AgreementUtil.getAgreement("DOWNLOAD", relativePath, "READY", null);
+                AgreementUtil.sendAgreement(netOut, confirm);
+
+                // 接收文件数据
                 File downloadFile = new File(downloadPath, file.getName());
                 try (FileOutputStream fos = new FileOutputStream(downloadFile)) {
-                    // 复制网络数据流到文件
-                    IOUtil.copy(netIn, fos);
-                    System.out.println("文件下载成功，保存位置: " + downloadFile.getAbsolutePath());
+                    long received = 0;
+                    byte[] buffer = new byte[8192];
+                    int bytesRead;
+
+                    while (received < fileSize &&
+                            (bytesRead = netIn.read(buffer, 0, (int)Math.min(buffer.length, fileSize - received))) != -1) {
+                        fos.write(buffer, 0, bytesRead);
+                        received += bytesRead;
+                    }
+
+                    // 检查是否完整接收
+                    if (received == fileSize) {
+                        System.out.println("文件下载成功，保存位置: " + downloadFile.getAbsolutePath());
+                    } else {
+                        System.out.println("文件下载不完整，可能已损坏");
+                    }
+                }
+
+                // 读取最终结果协议
+                agreementLine = AgreementUtil.receiveAgreement(netIn);
+                status = AgreementUtil.getStatus(agreementLine);
+                if (!"OK".equals(status)) {
+                    System.out.println("下载失败: " + AgreementUtil.getMessage(agreementLine));
                 }
             } else {
                 System.out.println("下载失败: " + AgreementUtil.getMessage(agreementLine));
@@ -190,50 +218,55 @@ public class FileUpDownServiceImp implements FileUpDownService {
         }
     }
 
-    // 文件上传
+    //文件上传
+    // 文件上传（客户端修正）
     @Override
     public void uploadFile(File upFile) {
         try (Socket socket = new Socket("127.0.0.1", 8888);
              OutputStream netOut = socket.getOutputStream();
              InputStream netIn = socket.getInputStream();
              FileInputStream fis = new FileInputStream(upFile)) {
+//            设置10秒超时
+            socket.setSoTimeout(10000);
 
-            // 构建上传协议
+            // 发送上传请求
             String serverPath = getRelativePath(current);
             String uploadAgreement = AgreementUtil.getAgreement(
                     "UPLOAD", serverPath + "/" + upFile.getName(), null, null);
-
-            // 发送上传协议
             AgreementUtil.sendAgreement(netOut, uploadAgreement);
-
-            // 读取服务器响应
+            logger.debug("尝试上传文件: {}", upFile.getAbsolutePath());
+            // 第一次响应：服务端是否准备就绪（READY）
             String agreementLine = AgreementUtil.receiveAgreement(netIn);
             String status = AgreementUtil.getStatus(agreementLine);
 
-            if ("OK".equals(status)) {
-                // 上传文件内容
-                IOUtil.copy(fis, netOut);
-                // 确保数据发送完毕
-                netOut.flush();
-
-                // 等待服务器完成处理
-                agreementLine = AgreementUtil.receiveAgreement(netIn);
-                status = AgreementUtil.getStatus(agreementLine);
-
-                if ("OK".equals(status)) {
-                    System.out.println("文件上传成功！");
-                } else {
-                    System.out.println("上传失败: " + AgreementUtil.getMessage(agreementLine));
-                }
-            } else {
+            if (!"READY".equals(status)) {
                 System.out.println("服务器拒绝上传: " + AgreementUtil.getMessage(agreementLine));
+                return;
             }
+
+            // 上传文件内容
+            IOUtil.copy(fis, netOut);
+            netOut.flush();
+            logger.debug("文件内容已发送，等待服务端确认");
+
+            // 第二次响应：服务端确认上传完成（OK）
+            String finalResponse = AgreementUtil.receiveAgreement(netIn);
+            String finalStatus = AgreementUtil.getStatus(finalResponse);
+
+            if ("OK".equals(finalStatus)) {
+                System.out.println("文件上传成功！");
+            } else {
+                System.out.println("上传失败: " + AgreementUtil.getMessage(finalResponse));
+            }
+
+        }catch (SocketTimeoutException e) {
+            System.out.println("错误：服务器响应超时，请检查服务端状态");
+            logger.error("服务器响应超时", e);
         } catch (IOException e) {
             System.out.println("上传过程中发生错误: " + e.getMessage());
+            logger.error("上传失败", e);
         }
     }
-
-
     // 获取文件相对路径（相对于root目录）
     private String getRelativePath(File file) {
         File root = new File("root");

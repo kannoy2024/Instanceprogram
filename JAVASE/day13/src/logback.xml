@@ -20,7 +20,7 @@
             <charset>utf-8</charset>
         </encoder>
         <!--日志输出路径-->
-        <file>C:/code/itheima-data.log</file>
+        <file>F:/CodeLog/itheima-data.log</file>
         <!--指定日志文件拆分和压缩规则-->
         <rollingPolicy
                 class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">

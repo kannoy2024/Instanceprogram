@@ -9,11 +9,10 @@ import java.io.OutputStream;
  */
 public class IOUtil {
     public static void copy(InputStream in, OutputStream out) throws IOException {
-        int len;
-        byte[] buf = new byte[1024];
-        while ((len = in.read(buf)) != -1) {
-            // System.out.println("read len=" + len);
-            out.write(buf, 0, len);
+        byte[] buffer = new byte[8192];
+        int bytesRead;
+        while ((bytesRead = in.read(buffer)) != -1) {
+            out.write(buffer, 0, bytesRead);
         }
     }
 }
